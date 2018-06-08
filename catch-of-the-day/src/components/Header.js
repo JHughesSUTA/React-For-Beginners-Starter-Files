@@ -12,7 +12,7 @@ class Header extends React.Component {
           Day
         </h1>
         <h3 className="tagline">
-          <span>Fresh Daily</span>
+          <span>{this.props.tagline}</span>     {/*this refers to the component instance*/}
         </h3>
       </header>
     )
