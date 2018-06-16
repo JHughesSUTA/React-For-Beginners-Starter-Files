@@ -1,1 +1,1 @@
-This repository is for my own study purposes. 
+This repository is for my own study purposes. Wes Bos's React for Beginners course. 
