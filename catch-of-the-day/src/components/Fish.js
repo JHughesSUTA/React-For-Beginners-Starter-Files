@@ -1,10 +1,23 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import { formatPrice } from '../helpers';
 
 class Fish extends React.Component {
   handleClick = () => {
     this.props.addToOrder(this.props.index);
   }; 
+
+  // this is done differentaly than on Header.js because it's a different type of component
+  static propTypes = {
+    details: PropTypes.shape({
+      image: PropTypes.string,
+      name: PropTypes.string,
+      desc: PropTypes.string,
+      status: PropTypes.string,
+      price: PropTypes.number
+    }),
+    addToOrder: PropTypes.func
+  }
 
   render() {
     // const image = this.props.details.image;
