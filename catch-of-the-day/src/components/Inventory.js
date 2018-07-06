@@ -1,7 +1,10 @@
 import React from 'react';
 import PropTypes from 'prop-types';
+import firebase from 'firebase';
 import AddFishForm from './AddFishForm';
 import EditFishForm from './EditFishForm';
+import Login from './Login';
+import base, { firebaseApp } from '../base';
 
 class Inventory extends React.Component {
   static propTypes = {
@@ -11,7 +14,51 @@ class Inventory extends React.Component {
     loadSampleFishes: PropTypes.func
   };
 
+  state = {
+    uid: null,
+    owner: null
+  };
+
+  authHandler = async authData => {
+    // 1. look up the current store in firebase database
+    const store = await base.fetch(this.props.storeID, { context: this });      // await is so we put the store into the variable rather than the promise
+
+    // 2. claim it if there is no owner
+    if (!store.owner) {
+      // save it as our own
+      await base.post(`${this.props.storeID}/owner`, {
+        data: authData.user.uid
+      });
+    }
+
+    // 3. set the state of the inventory component to reflect the current user
+    this.setState({
+      uid: authData.user.uid, 
+      owner: store.owner || authData.user.uid
+    });
+  }
+
+  authenticate = provider => {
+    const authProvider = new firebase.auth[`${provider}AuthProvider`]();
+    firebaseApp.auth().signInWithPopup(authProvider).then(this.authHandler);
+  };
+
   render() {
+    // 1. check if they are logged in
+    if (!this.state.uid) {
+      return <Login authenticate={this.authenticate} />
+    }
+
+    // 2. check if they are not the owner of the store
+    if (this.state.uid !== this.state.owner) {
+      return (
+        <div>
+          <h2>Sorry, you are not the owner</h2>
+        </div>
+      );
+    }
+
+    // 3. they must be the owner, render the inventory
     return (
       <div className="inventory">
         <h2>Inventory!</h2>

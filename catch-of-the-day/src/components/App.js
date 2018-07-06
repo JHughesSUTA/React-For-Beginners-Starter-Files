@@ -33,7 +33,6 @@ class App extends React.Component {
   }
 
   componentDidUpdate() {
-    console.log(this.props.match.params);
     localStorage.setItem(
       this.props.match.params.storeID,
       JSON.stringify(this.state.order)
@@ -125,6 +124,7 @@ class App extends React.Component {
           deleteFish={this.deleteFish}
           loadSampleFishes={this.loadSampleFishes} 
           fishes={this.state.fishes}
+          storeID={this.props.match.params.storeID}
         />
       </div>
     )
